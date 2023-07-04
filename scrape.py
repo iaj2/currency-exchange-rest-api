@@ -22,3 +22,17 @@ symbol_list =[]
 for cell in first_row_cells:
     if cell.text:
       symbol_list.append(re.search(symbol_pattern,cell.text).group(0))
+
+# Store conversions for each country in dictionary
+
+conv_dic = {}
+
+for i, row in enumerate(rows[1:]):
+    cells = row.find_all("td")[2:]  # Skip unneeded cells
+    currency_name = symbol_list[i]
+    conv_dic[currency_name] = {
+        # currency_exchange_name : currency_exchange_rate
+        symbol_list[j]: cell.contents[0]
+        for j, cell in enumerate(cells)
+    }
+
