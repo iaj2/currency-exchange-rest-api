@@ -1,5 +1,4 @@
 """Scrapes web source for exchange rate data"""
-import re
 from bs4 import BeautifulSoup
 import requests
 
@@ -15,14 +14,13 @@ table = soup.find("table")
 rows = table.find_all("tr")
 
 # Get currency symbols from first row in order
-SYMBOL_PATTERN = r'([A-Z]{3})'
-
 first_row_cells = rows[0].find_all("td")
 
 symbol_list =[]
 for cell in first_row_cells:
-    if cell.text:
-        symbol_list.append(re.search(SYMBOL_PATTERN,cell.text).group(0))
+    a = cell.find('a')
+    if a:
+        symbol_list.append(a.contents[1])
 
 # Store conversions for each country in dictionary
 
