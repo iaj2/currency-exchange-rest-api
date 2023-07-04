@@ -4,7 +4,7 @@ import requests
 
 DATA_SOURCE_URL = "https://www.exchangerates.org.uk/currency/currency-exchange-rates-table.html"
 
-class CurrencyConverter:
+class CurrencyExchangeScraper:
     """Scrapes source for currency exchange data"""
     def __init__(self):
         self.url = DATA_SOURCE_URL
