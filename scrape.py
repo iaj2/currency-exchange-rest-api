@@ -1,24 +1,38 @@
+"""Scrapes web source for exchange rate data"""
 import re
 from bs4 import BeautifulSoup
 import requests
 
 
-url = "https://www.exchangerates.org.uk/currency/currency-exchange-rates-table.html"
-response = requests.get(url)
+URL = "https://www.exchangerates.org.uk/currency/currency-exchange-rates-table.html"
+response = requests.get(URL)
 html_content = response.content
 
 soup = BeautifulSoup(html_content, "html.parser")
 
 # Get the exchange table data
-table = soup.find("table") 
+table = soup.find("table")
 rows = table.find_all("tr")
 
 # Get currency symbols from first row in order
-symbol_pattern = r'([A-Z]{3})'
+SYMBOL_PATTERN = r'([A-Z]{3})'
 
 first_row_cells = rows[0].find_all("td")
 
 symbol_list =[]
 for cell in first_row_cells:
     if cell.text:
-      symbol_list.append(re.search(symbol_pattern,cell.text).group(0))
+        symbol_list.append(re.search(SYMBOL_PATTERN,cell.text).group(0))
+
+# Store conversions for each country in dictionary
+
+conv_dic = {}
+
+for i, row in enumerate(rows[1:]):
+    cells = row.find_all("td")[2:]  # Skip unneeded cells
+    currency_name = symbol_list[i]
+    conv_dic[currency_name] = {
+        # currency_exchange_name : currency_exchange_rate
+        symbol_list[j]: cell.contents[0]
+        for j, cell in enumerate(cells)
+    }
